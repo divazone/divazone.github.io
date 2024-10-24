@@ -1,0 +1,287 @@
+<!doctype html><html lang=zh-TW><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>提升你的 Ansible 技能的幾個建議 - Divazone's Space</title><meta name=Description content><meta property="og:title" content="提升你的 Ansible 技能的幾個建議">
+<meta property="og:description" content="前言 先說本文僅代表個人撰寫 Ansible Playbook及 Ansible AWX 之經驗累積。 Ansible 本身具有幾個很顯著的特點: 好寫, 易讀, Agentless，然而，說到好寫，也"><meta property="og:type" content="article"><meta property="og:url" content="https://blog.divaozne.tw/2024/07/20240731-suggestions_to_enhance_your_ansible_skills/"><meta property="og:image" content="https://blog.divaozne.tw/logo.png"><meta property="article:section" content="posts"><meta property="article:published_time" content="2024-07-31T00:00:00+08:00"><meta property="article:modified_time" content="2024-07-31T00:00:00+08:00"><meta property="og:site_name" content="Divazone's Space"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://blog.divaozne.tw/logo.png"><meta name=twitter:title content="提升你的 Ansible 技能的幾個建議"><meta name=twitter:description content="前言 先說本文僅代表個人撰寫 Ansible Playbook及 Ansible AWX 之經驗累積。 Ansible 本身具有幾個很顯著的特點: 好寫, 易讀, Agentless，然而，說到好寫，也"><meta name=application-name content="My cool site"><meta name=apple-mobile-web-app-title content="My cool site"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://blog.divaozne.tw/2024/07/20240731-suggestions_to_enhance_your_ansible_skills/><link rel=prev href=https://blog.divaozne.tw/2024/03/20240321-vscode-plugins/><link rel=next href=https://blog.divaozne.tw/2024/08/20240802-identifying-linux-performance-bottlenecks/><link rel=stylesheet href=/css/style.min.css><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"提升你的 Ansible 技能的幾個建議","inLanguage":"zh-TW","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.divaozne.tw\/2024\/07\/20240731-suggestions_to_enhance_your_ansible_skills\/"},"genre":"posts","keywords":"automation, ansible, iac","wordcount":3057,"url":"https:\/\/blog.divaozne.tw\/2024\/07\/20240731-suggestions_to_enhance_your_ansible_skills\/","datePublished":"2024-07-31T00:00:00+08:00","dateModified":"2024-07-31T00:00:00+08:00","publisher":{"@type":"Organization","name":""},"author":{"@type":"Person","name":"Divazone King"},"description":""}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="Divazone's Space">Divazone's Space</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>Posts </a><a class=menu-item href=/tags/>Tags </a><a class=menu-item href=/categories/>Categories </a><a class=menu-item href=/about/>About </a><a class=menu-item href=/donate/>Donate </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章標題或內容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i>
+</span></span><a href=javascript:void(0); class="menu-item theme-switch" title=切換主題><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="Divazone's Space">Divazone's Space</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章標題或內容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>Posts</a><a class=menu-item href=/tags/ title>Tags</a><a class=menu-item href=/categories/ title>Categories</a><a class=menu-item href=/about/ title>About</a><a class=menu-item href=/donate/ title>Donate</a><a href=javascript:void(0); class="menu-item theme-switch" title=切換主題>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目錄</h2><div class="toc-content always-active" id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">提升你的 Ansible 技能的幾個建議</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>Divazone King</a></span>&nbsp;<span class=post-category>收錄於 <a href=/categories/ansible/><i class="far fa-folder fa-fw" aria-hidden=true></i>ansible</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2024-07-31>2024-07-31</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;約 3057 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;預計閱讀 7 分鐘&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目錄</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#前言>前言</a><ul><li><a href=#suggestion-1-建議遵循-ansible-direcory-layout-的最佳實踐>Suggestion 1: 建議遵循 Ansible Direcory Layout 的最佳實踐</a></li><li><a href=#suggestion-2-playbook-命名法建議>Suggestion 2: Playbook 命名法建議</a></li><li><a href=#suggestion-3-一個專案對應一個業務目標>Suggestion 3: 一個專案對應一個業務目標</a></li><li><a href=#suggestion-4-變數無給值時預設使用-default-值>Suggestion 4: 變數無給值時，預設使用 default 值</a></li><li><a href=#suggestion-5-ansible-workflow-實作提示>Suggestion 5: Ansible Workflow 實作提示</a></li><li><a href=#suggestion-6-使用版本控制系統version-control-system管理>Suggestion 6: 使用版本控制系統（Version Control System）管理</a></li><li><a href=#suggestion-7-單一-host-可同時屬於多個-group>Suggestion 7: 單一 host 可同時屬於多個 group</a></li><li><a href=#suggestion-8-避免使用-ansible_connectionlocal建議改用-ansible_connectionssh>Suggestion 8: 避免使用 <code>ansible_connection=local</code>，建議改用 <code>ansible_connection=ssh</code></a></li><li><a href=#suggestion-9-多利用-ping-模組進行連線測試>Suggestion 9: 多利用 <code>ping</code> 模組進行連線測試</a></li><li><a href=#suggestion-10-關閉-gather_facts-以加速執行速度>Suggestion 10: 關閉 gather_facts 以加速執行速度</a></li><li><a href=#suggestion-11-設定-fact_cache-以使用快取的環境變數>Suggestion 11: 設定 fact_cache 以使用快取的環境變數</a></li><li><a href=#suggestion-12-增加-ssh-參數以提升連線效率>Suggestion 12: 增加 ssh 參數以提升連線效率</a></li><li><a href=#suggestion-13-收集-tasks-的處理時間>Suggestion 13: 收集 tasks 的處理時間</a></li><li><a href=#suggestion-14-盡可能提供完整的-inventory-資訊>Suggestion 14: 盡可能提供完整的 Inventory 資訊</a></li><li><a href=#suggestion-15-對敏感工作禁用-log>Suggestion 15: 對敏感工作禁用 Log</a></li></ul></li><li><a href=#references>References</a></li></ul></nav></div></div><div class=content id=content><h2 id=前言>前言</h2><p>先說本文僅代表個人撰寫 Ansible Playbook及 Ansible AWX 之經驗累積。</p><p>Ansible 本身具有幾個很顯著的特點: <code>好寫</code>, <code>易讀</code>, <code>Agentless</code>，然而，說到好寫，也因為可以寫出多種風格，因此特別撰寫此文，記錄我在編寫 Ansible Playbook 時需要注意的一些事項。當然，其中一些內容會參考 Ansible 官方列出的 <a href=https://docs.ansible.com/ansible/latest/tips_tricks/index.html#ansible-tips-and-tricks target=_blank rel="noopener noreffer">Ansible tips and tricks</a> ，但大多數仍以我的個人經驗為出發點。</p><h3 id=suggestion-1-建議遵循-ansible-direcory-layout-的最佳實踐>Suggestion 1: 建議遵循 Ansible Direcory Layout 的最佳實踐</h3><p>經常編寫 Ansible 的人都知道，通過修改 <code>ansible.cfg</code> 文件，可以讓許多 playbook 的變數呼叫和路徑變得非常靈活。然而，雖然可以進行修改，但強烈不建議這樣做。原因是你的同事或接手的工程師可能不了解你的個人習慣，因此建議遵循最佳實踐和推薦的文件夾命名方式。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span><span class=lnt>19
+</span><span class=lnt>20
+</span><span class=lnt>21
+</span><span class=lnt>22
+</span><span class=lnt>23
+</span><span class=lnt>24
+</span><span class=lnt>25
+</span><span class=lnt>26
+</span><span class=lnt>27
+</span><span class=lnt>28
+</span><span class=lnt>29
+</span><span class=lnt>30
+</span><span class=lnt>31
+</span><span class=lnt>32
+</span><span class=lnt>33
+</span><span class=lnt>34
+</span><span class=lnt>35
+</span><span class=lnt>36
+</span><span class=lnt>37
+</span><span class=lnt>38
+</span><span class=lnt>39
+</span><span class=lnt>40
+</span><span class=lnt>41
+</span><span class=lnt>42
+</span><span class=lnt>43
+</span><span class=lnt>44
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>production_inventory        </span><span class=w> </span><span class=c># production servers 主機目錄</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>staging_inventory           </span><span class=w> </span><span class=c># staging environment 主機目錄</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>group_vars/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=l>group1                </span><span class=w> </span><span class=c># 以 Group 為單位，賦予對應之變數</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=l>group2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>host_vars/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=l>hostname1             </span><span class=w> </span><span class=c># 以 host 為單位，賦予對應之變數</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>   </span><span class=l>hostname2</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>library/                 </span><span class=w> </span><span class=c># 任何自己寫或自己維護 (也就是非 Built-in) 的 module 都建議放這邊</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>module_utils/            </span><span class=w> </span><span class=c># 個人很少在用</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>                          </span><span class=c># 可參考 `/usr/lib/python2.7/site-packages/ansible/module_utils` 的內容</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>filter_plugins/          </span><span class=w> </span><span class=c># 任何自己寫或自己維護 (也就是非 Built-in) 的filter 都建議放這邊</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>Do_something_for_someone_1.yml      </span><span class=w> </span><span class=c># 為了某個服務做某事，後面會有詳細建議</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>Do_something_for_someone_2.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>Do_something_for_someone_3.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>roles/</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=l>common/              </span><span class=w> </span><span class=c># 其中一個 role 的名字 `common`</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>tasks/           </span><span class=w> </span><span class=c># common 的 tasks 資料夾</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=l>main.yml     </span><span class=w> </span><span class=c># common 相關的 tasks action 請先寫在這</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>handlers/        </span><span class=w> </span><span class=c># common 裡的事件處理</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=l>main.yml     </span><span class=w> </span><span class=c># common 相關的 event handler 請先寫在這</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>templates/       </span><span class=w> </span><span class=c># common 相關的 jinja2 模板</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=l>ntp.conf.j2  </span><span class=w> </span><span class=c># common 相關的 file template 請先寫在這</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>files/           </span><span class=w> </span><span class=c># common 相關的檔案庫</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=l>bar.txt      </span><span class=w> </span><span class=c># common 相關的檔案</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=l>foo.sh       </span><span class=w> </span><span class=c># common 相關的 script 放這邊</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>vars/            </span><span class=w> </span><span class=c>#</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=l>main.yml     </span><span class=w> </span><span class=c># 跟這個 common 有相關的區域變數宣告請放這邊</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>defaults/        </span><span class=w> </span><span class=c># common 相關的預設變數</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=l>main.yml     </span><span class=w> </span><span class=c># 可以寫變數預設值在這邊，但我個人比較推薦寫到 tasks 裡面的 playbook 裡，後面會有詳細建議和寫法</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>meta/            </span><span class=w> </span><span class=c># common 相關的其他角色依賴</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>            </span><span class=l>main.yml     </span><span class=w> </span><span class=c># 宣告角色依賴</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>library/         </span><span class=w> </span><span class=c># 針對 common role 的函式庫</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>module_utils/    </span><span class=w> </span><span class=c># 個人很少在用</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>lookup_plugins/  </span><span class=w> </span><span class=c># 個人很少在用</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span><span class=l>webtier/             </span><span class=w> </span><span class=c># 呈上的結構</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=l>...</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-2-playbook-命名法建議>Suggestion 2: Playbook 命名法建議</h3><p>在命名 Playbook 時，遵循 <code>Do something for someone</code> 的格式。我知道很多人會直接用 <code>someone</code> 作為 Playbook 的命名，但基於後續會提到的 Ansible AWX 帶來的 Workflow 概念——<code>多個 Playbook 序列化執行</code>，以及期望維護者能一眼看出這份 Playbook 主要是在針對 <code>什麼目標做什麼事情</code>，因此建議採用此命名規範。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c>#不建議</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>webserver.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>database.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c>#建議</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>deploy-webserver.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>deploy-database.yml</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-3-一個專案對應一個業務目標>Suggestion 3: 一個專案對應一個業務目標</h3><p>Ansible 最頂端的資料夾稱為 <code>專案 (Project)</code>，其次是 Playbook 及 roles 等文件結構。</p><p>假設今天要部署一個 HTTP 伺服器，需要包含 lb、www、db，我會將 Playbook 分為以下幾個：</p><ul><li>Deploy_http_server<ul><li>install_lb.yml</li><li>install_&lt;www.yml></li><li>install_db.yml</li><li>check_www_service.yml</li></ul></li></ul><p>在這個案例中，專案名稱為 Deploy_http_server，裡面包含上述所列的 Playbook，以<code>一個專案一個業務目標</code>為核心進行 Playbook 的撰寫。</p><h3 id=suggestion-4-變數無給值時預設使用-default-值>Suggestion 4: 變數無給值時，預設使用 default 值</h3><p>常寫 Shell Script 的人應該熟悉以下寫法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nv>FOO</span><span class=o>=</span><span class=si>${</span><span class=nv>VARIABLE</span><span class=k>:-</span><span class=nv>default</span><span class=si>}</span> <span class=c1># 如果 VARIABLE 無給值，及使用 default 值</span>
+</span></span></code></pre></td></tr></table></div></div><p>在 Ansible 中也支援這種寫法：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>---
+</span></span><span class=line><span class=cl>- hosts: <span class=s2>&#34;{{ variable_host | default(&#39;all&#39;) }}&#34;</span>
+</span></span><span class=line><span class=cl>  tasks:
+</span></span><span class=line><span class=cl>    - name: ...
+</span></span><span class=line><span class=cl>    ...
+</span></span></code></pre></td></tr></table></div></div><p>這個使用情境我個人應用在部署新 VM 或更新系統時，針對<code>特定主機</code>時會用到。過去要針對新部署的機器進行一些修正時，都需要修改 hosts 裡面的值，現在用這個寫法可以直接這樣操作：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>ansible-playbook -i inventory deploy_new_vm_env --extra-vars<span class=o>=</span><span class=s1>&#39;variable_host=192.168.50.1&#39;</span>
+</span></span></code></pre></td></tr></table></div></div><p>這樣就可以針對 192.168.50.1 這台機器進行部署或上 patch，如果我沒有指定任何 extra-vars 的話，則會直接對 inventory 中的所有機器（all）進行處理。</p><p>這個寫法也可以結合 Ansible AWX 裡 Survey 功能進行 Self-service 應用。</p><h3 id=suggestion-5-ansible-workflow-實作提示>Suggestion 5: Ansible Workflow 實作提示</h3><p>這個概念源自於 Ansible AWX，它將<code>多個 Playbook 序列化執行</code>。這種做法適用於由多個業務目標所組成的更大業務目標。你可以將其類比為 Agile 專案術語中的 Epic / Story / Task 對應到 Ansible 的 Workflow / Playbook / Roles。</p><p>Workflow 具體寫法如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat deploy_openshift_cluster.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>import_playbook</span><span class=p>:</span><span class=w> </span><span class=l>prerequisite_env.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>import_playbook</span><span class=p>:</span><span class=w> </span><span class=l>deploy_core_componets.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>import_playbook</span><span class=p>:</span><span class=w> </span><span class=l>check_componets.yml</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><p>如果你需要的話，也可以將 workflow 嵌套在 workflow 中，但除非你對抽象化程度非常有把握，否則建議最多只做一層 workflow，以應付大多數需求。</p><p>此外，這個功能主要是為了 Ansible AWX 設計的，不僅具備可視化 Workflow 的能力，還增加了更多錯誤處理功能。例如，當 Playbook 執行時出現問題，可以跳轉到錯誤處理步驟進行應對，比如發送通知等。</p><h3 id=suggestion-6-使用版本控制系統version-control-system管理>Suggestion 6: 使用版本控制系統（Version Control System）管理</h3><p>在這裡的版本控制系統可以是任何一家方案，例如 git、svn、mercurial 等等。沒有最好的方案，只有最適合自己的方案。我個人強烈推薦使用 <code>git</code>。無論你是採用集中式還是分散式的管理方式，都可以使用 git 來實現，非常好用。</p><p>遵循 Infrastructure as Code 的思想，應該對所有源代碼的變動進行記錄。使用版本控制有以下幾個好處：</p><ul><li>允許使用者將檔案恢復到某個時間點的狀態</li><li>追蹤不同時間點的修改</li><li>確認在某個時間點進行了哪些變更，並查找導致問題的責任人</li><li>容易進行備份和管理</li></ul><p>在 Ansible AWX 中，其專案內容的更新也是需要<code>基於版本控制</code>進行設定檔的變動，這樣便於進行 Playbook 的內容管理。</p><h3 id=suggestion-7-單一-host-可同時屬於多個-group>Suggestion 7: 單一 host 可同時屬於多個 group</h3><p>host 是唯一值，而 group 可以將多個 host 定義在一起，並且可以多重定義 host。也就是說，你可以把 group 當作 tag 來使用，根據不同的角色、位置、任務來進行定義，這在使用 <code>--limit</code> 參數時會非常好用。</p><p>具體的 inventory 寫法如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=p>[</span><span class=l>infra:children]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>db</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>www</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>lb</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>[</span><span class=l>db]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>tw-db.divazone.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>[</span><span class=l>www]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>tw-www.divazone.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>[</span><span class=l>lb]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>tw-lb.divazone.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>[</span><span class=l>tw]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>tw-db.divazone.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>tw-lb.divazone.local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>tw-www.divazone.local</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-8-避免使用-ansible_connectionlocal建議改用-ansible_connectionssh>Suggestion 8: 避免使用 <code>ansible_connection=local</code>，建議改用 <code>ansible_connection=ssh</code></h3><p>其實這裡不是說不能用 local，而是設計時請優先考慮使用 SSH 連線，有其他特殊需求再考慮使用 local，因為這主要牽涉到 Ansible 的連線行為。你可以使用 <code>-vvv</code> 選項來觀察連線過程。先前遇到過問題是使用 local 執行時，會有權限和環境變數的問題，經研究 issue 後，發現改成 SSH 連線後就沒有這些問題。此外，Ansible 預設的連線方式是 <code>ansible_connection=ssh</code>，所以在 inventory 中不用特別明寫。</p><p>具體寫法如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=c># 不建議</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>localhost ansible_connection=local</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># 建議</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>localhost ansible_connection=ssh ansible_host=localhost</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-9-多利用-ping-模組進行連線測試>Suggestion 9: 多利用 <code>ping</code> 模組進行連線測試</h3><p>在執行任何 Playbook 之前，我會先針對我要執行的機器跑 <code>ping</code>，以確保機器連接狀況正常。有時候可以通過這個動作提前發現網路和執行問題。多數時候，我會把這個工作寫成一份通用 Playbook，並搭配 Workflow 來進行檢查。此外，Ansible 的 <code>ping</code> 是一個 Ansible 模組，而不是單純的 Linux 工具 <code>ping</code>。</p><p>具體的 ping Playbook 寫法如下：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat pingall.yml</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>hosts</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ variable_host | default(&#39;all&#39;) }}&#34;</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>tasks</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Test connectivity</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>ping</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>register</span><span class=p>:</span><span class=w> </span><span class=l>result</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>Print result</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=nt>debug</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>        </span><span class=nt>msg</span><span class=p>:</span><span class=w> </span><span class=s2>&#34;{{ result }}&#34;</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-10-關閉-gather_facts-以加速執行速度>Suggestion 10: 關閉 gather_facts 以加速執行速度</h3><p>因為 Ansible 是 agentless，執行時預設會先去收集 host 上的環境資訊（例如 IP、hostname、OS 版本等）。然而，當管理的機器過多時，會發現收集這些資訊的時間過長。這時可以選擇將 <code>gather_facts</code> 設置為 <code>false</code>，以節省收集資訊的時間。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=nn>---</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span>- <span class=nt>hosts</span><span class=p>:</span><span class=w> </span><span class=l>all</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>gather_facts</span><span class=p>:</span><span class=w> </span><span class=kc>false</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>  </span><span class=nt>tasks</span><span class=p>:</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>    </span>- <span class=nt>name</span><span class=p>:</span><span class=w> </span><span class=l>...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=l>...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>      </span><span class=l>...</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-11-設定-fact_cache-以使用快取的環境變數>Suggestion 11: 設定 fact_cache 以使用快取的環境變數</h3><p>假設你真的需要用到 <code>gather_facts</code> 收集的環境資訊，但又不想在短時間內多次等待收集資訊的時間，可以在 ansible.cfg 中使用 <code>fact_caching</code> 來作為快取。這樣可以在一定時間內重用已收集的資訊，從而提高執行效率。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat /etc/ansible/ansible.cfg</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>[</span><span class=l>defaults]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># 除了支援JSON file 以外，還另外支援 redis、memcached，在管大量機器的時候才需要搭配這方面的方案</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>fact_caching = jsonfile</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>fact_caching_connection = /tmp/facts</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=c># hardtimeout</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>fact_caching_timeout = 600</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>...</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-12-增加-ssh-參數以提升連線效率>Suggestion 12: 增加 ssh 參數以提升連線效率</h3><p>這部分偏向於 SSH 的傳輸調教，主要是 <code>ControlPersist</code> 和 <code>Pipelining</code> 這兩個選項。
+<code>ControlPersist</code> 可以讓 SSH 建立的連線一直保持著連線，建議開啟以減少重複連線的時間。
+而 <code>Pipelining</code> 則可以減少 Ansible 控制節點到主機之間的連線數量，也有助於提升執行效率。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span><span class=lnt>8
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>cat /etc/ansible/ansible.cfg</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>[</span><span class=l>ssh_connection]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>ssh_args = -o ControlMaster=auto -o ControlPersist=300s</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>control_path = %(directory)s/%%h-%%r</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>pipelining = True</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>...</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-13-收集-tasks-的處理時間>Suggestion 13: 收集 tasks 的處理時間</h3><p>如果每次執行時都不知道哪個 task 跑得最久或卡在哪裡，可以使用 Ansible 插件 <code>profile_tasks</code> 來統計各個 task 的處理時間。這樣可以精確了解每個 task 的耗時，尤其是 Gathering Facts 所消耗的時間。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-yaml data-lang=yaml><span class=line><span class=cl><span class=l>/etc/ansible/ansible.cfg</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=p>[</span><span class=l>defaults]</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>...</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=l>callback_whitelist = profile_tasks</span><span class=w>
+</span></span></span><span class=line><span class=cl><span class=w></span><span class=nn>...</span><span class=w>
+</span></span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-14-盡可能提供完整的-inventory-資訊>Suggestion 14: 盡可能提供完整的 Inventory 資訊</h3><p>盡可能在 Inventory 中提供明確的資訊，而不採用隱晦的資訊，尤其是 <code>ansible_host</code>。這樣可以確保每個人看到這份 Inventory 時的理解是一致的。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=c1># 不建議</span>
+</span></span><span class=line><span class=cl>db1
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl><span class=c1># 建議</span>
+</span></span><span class=line><span class=cl>db1 <span class=nv>ansible_host</span><span class=o>=</span>10.1.2.75
+</span></span></code></pre></td></tr></table></div></div><h3 id=suggestion-15-對敏感工作禁用-log>Suggestion 15: 對敏感工作禁用 Log</h3><p>若不希望在log中留下任何敏感性資料，可以在該 Task 多加一個 <code>no_log: True</code> 來避免記錄敏感資訊。</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>- name: Secret Task
+</span></span><span class=line><span class=cl>  shell: /usr/bin/gg --value<span class=o>={{</span> secret_value <span class=o>}}</span>
+</span></span><span class=line><span class=cl>  no_log: True
+</span></span></code></pre></td></tr></table></div></div><h2 id=references>References</h2><ul><li><a href=https://docs.ansible.com/ansible/latest/tips_tricks/index.html#ansible-tips-and-tricks target=_blank rel="noopener noreffer">Ansible tips and tricks</a></li><li><a href=https://docs.ansible.com/ansible/latest/tips_tricks/sample_setup.html#sample-directory-layout target=_blank rel="noopener noreffer">Ansible tips and tricks - Sample directory layout</a></li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新於 2024-07-31</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://blog.divaozne.tw/2024/07/20240731-suggestions_to_enhance_your_ansible_skills/ data-title="提升你的 Ansible 技能的幾個建議" data-hashtags=automation,ansible,iac><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://blog.divaozne.tw/2024/07/20240731-suggestions_to_enhance_your_ansible_skills/ data-hashtag=automation><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/automation/>automation</a>,&nbsp;<a href=/tags/ansible/>ansible</a>,&nbsp;<a href=/tags/iac/>iac</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主頁</a></span></section></div><div class=post-nav><a href=/2024/03/20240321-vscode-plugins/ class=prev rel=prev title="我在VS Code裡面用了哪些插件"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>我在VS Code裡面用了哪些插件</a>
+<a href=/2024/08/20240802-identifying-linux-performance-bottlenecks/ class=next rel=next title="尋找當下 Linux OS 效能瓶頸">尋找當下 Linux OS 效能瓶頸<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=disqus_thread class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://disqus.com/?ref_noscript>Disqus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.123.3">Hugo</a> 強力驅動 | 主題 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2022 - 2024</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank>Divazone King</a></span>&nbsp;|&nbsp;<span class=license>All Rights Reserved</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到頂部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看評論><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://divazone-tw.disqus.com/embed.js defer></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"複製到剪貼板",maxShownLines:50},comment:{},search:{algoliaAppID:"BR8J22JKVH",algoliaIndex:"blog.divazone",algoliaSearchKey:"4d018756130ab82ac57f3cd9c585ea19",highlightTag:"em",maxResultLength:10,noResultsFound:"沒有找到結果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=/js/theme.min.js></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4BPYV5FEFR",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4BPYV5FEFR" async></script></body></html>
