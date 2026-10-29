@@ -1,0 +1,127 @@
+<!doctype html><html lang=zh-TW><head><meta charset=utf-8><meta name=viewport content="width=device-width,initial-scale=1"><meta name=robots content="noodp"><title>用 Distribution 建立 TLS 容器倉庫 - Divazone's Space</title><meta name=Description content="在 RHEL 9/10 使用 Podman 執行 Distribution 3.1.2，設定自簽 TLS 憑證、客戶端信任與防火牆，並以 Skopeo 測試映像檔複製與查詢。"><meta property="og:title" content="用 Distribution 建立 TLS 容器倉庫">
+<meta property="og:description" content="在 RHEL 9/10 使用 Podman 執行 Distribution 3.1.2，設定自簽 TLS 憑證、客戶端信任與防火牆，並以 Skopeo 測試映像檔複製與查詢。"><meta property="og:type" content="article"><meta property="og:url" content="https://blog.divazone.tw/2026/10/20261028-how-to-build-up-a-secure-container-registry-using-docker-distribution/"><meta property="og:image" content="https://blog.divazone.tw/favicon.ico"><meta property="article:section" content="posts"><meta property="article:published_time" content="2026-10-28T00:00:00+08:00"><meta property="article:modified_time" content="2026-10-29T08:12:24+08:00"><meta property="og:site_name" content="Divazone's Space"><meta name=twitter:card content="summary_large_image"><meta name=twitter:image content="https://blog.divazone.tw/favicon.ico"><meta name=twitter:title content="用 Distribution 建立 TLS 容器倉庫"><meta name=twitter:description content="在 RHEL 9/10 使用 Podman 執行 Distribution 3.1.2，設定自簽 TLS 憑證、客戶端信任與防火牆，並以 Skopeo 測試映像檔複製與查詢。"><meta name=application-name content="My cool site"><meta name=apple-mobile-web-app-title content="My cool site"><meta name=theme-color content="#ffffff"><meta name=msapplication-TileColor content="#da532c"><link rel="shortcut icon" type=image/x-icon href=/favicon.ico><link rel=icon type=image/png sizes=32x32 href=/favicon-32x32.png><link rel=icon type=image/png sizes=16x16 href=/favicon-16x16.png><link rel=apple-touch-icon sizes=180x180 href=/apple-touch-icon.png><link rel=mask-icon href=/safari-pinned-tab.svg color=#5bbad5><link rel=manifest href=/site.webmanifest><link rel=canonical href=https://blog.divazone.tw/2026/10/20261028-how-to-build-up-a-secure-container-registry-using-docker-distribution/><link rel=prev href=https://blog.divazone.tw/2026/10/20261027-self-defined-qcow2.md/><link rel=next href=https://blog.divazone.tw/2026/10/20261029-skopeo/><link rel=stylesheet href=/css/style.min.cf6878db51c51b2d04ae155284a4403dbee8db33e16c066f954c95279c271fcd.css integrity="sha256-z2h421HFGy0ErhVShKRAPb7o2zPhbAZvlUyVJ5wnH80="><link rel=preload href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/all.min.css></noscript><link rel=preload href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css as=style onload='this.onload=null,this.rel="stylesheet"'><noscript><link rel=stylesheet href=https://cdn.jsdelivr.net/npm/animate.css@4.1.1/animate.min.css></noscript><meta name=google-site-verification content="aV8aON1_Lf-PHjs9o8j7ozwO73Xv89xUdTMJ9oXfaEo"><script type=application/ld+json>{"@context":"http://schema.org","@type":"BlogPosting","headline":"用 Distribution 建立 TLS 容器倉庫","inLanguage":"zh-TW","mainEntityOfPage":{"@type":"WebPage","@id":"https:\/\/blog.divazone.tw\/2026\/10\/20261028-how-to-build-up-a-secure-container-registry-using-docker-distribution\/"},"genre":"posts","keywords":"container, registry, smart start","wordcount":1129,"url":"https:\/\/blog.divazone.tw\/2026\/10\/20261028-how-to-build-up-a-secure-container-registry-using-docker-distribution\/","datePublished":"2026-10-28T00:00:00+08:00","dateModified":"2026-10-29T08:12:24+08:00","license":"Divazone King","publisher":{"@type":"Organization","name":"Divazone's Space"},"author":{"@type":"Person","name":"Divazone King"},"description":"在 RHEL 9/10 使用 Podman 執行 Distribution 3.1.2，設定自簽 TLS 憑證、客戶端信任與防火牆，並以 Skopeo 測試映像檔複製與查詢。"}</script></head><body data-header-desktop=fixed data-header-mobile=auto><script type=text/javascript>(window.localStorage&&localStorage.getItem("theme")?localStorage.getItem("theme")==="dark":"auto"==="auto"?window.matchMedia("(prefers-color-scheme: dark)").matches:"auto"==="dark")&&document.body.setAttribute("theme","dark")</script><div id=mask></div><div class=wrapper><header class=desktop id=header-desktop><div class=header-wrapper><div class=header-title><a href=/ title="Divazone's Space">Divazone's Space</a></div><div class=menu><div class=menu-inner><a class=menu-item href=/posts/>Posts </a><a class=menu-item href=/tags/>Tags </a><a class=menu-item href=/categories/>Categories </a><a class=menu-item href=/about/>About </a><span class="menu-item delimiter"></span><span class="menu-item search" id=search-desktop>
+<input type=text placeholder=搜索文章標題或內容... id=search-input-desktop>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-desktop title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-desktop title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-desktop><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i>
+</span></span><a href=javascript:void(0); class="menu-item theme-switch" title=切換主題><i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></div></header><header class=mobile id=header-mobile><div class=header-container><div class=header-wrapper><div class=header-title><a href=/ title="Divazone's Space">Divazone's Space</a></div><div class=menu-toggle id=menu-toggle-mobile><span></span><span></span><span></span></div></div><div class=menu id=menu-mobile><div class=search-wrapper><div class="search mobile" id=search-mobile><input type=text placeholder=搜索文章標題或內容... id=search-input-mobile>
+<a href=javascript:void(0); class="search-button search-toggle" id=search-toggle-mobile title=搜索><i class="fas fa-search fa-fw" aria-hidden=true></i>
+</a><a href=javascript:void(0); class="search-button search-clear" id=search-clear-mobile title=清空><i class="fas fa-times-circle fa-fw" aria-hidden=true></i>
+</a><span class="search-button search-loading" id=search-loading-mobile><i class="fas fa-spinner fa-fw fa-spin" aria-hidden=true></i></span></div><a href=javascript:void(0); class=search-cancel id=search-cancel-mobile>取消</a></div><a class=menu-item href=/posts/ title>Posts</a><a class=menu-item href=/tags/ title>Tags</a><a class=menu-item href=/categories/ title>Categories</a><a class=menu-item href=/about/ title>About</a><a href=javascript:void(0); class="menu-item theme-switch" title=切換主題>
+<i class="fas fa-adjust fa-fw" aria-hidden=true></i></a></div></div></header><div class="search-dropdown desktop"><div id=search-dropdown-desktop></div></div><div class="search-dropdown mobile"><div id=search-dropdown-mobile></div></div><main class=main><div class=container><div class=toc id=toc-auto><h2 class=toc-title>目錄</h2><div class="toc-content always-active" id=toc-content-auto></div></div><article class="page single"><h1 class="single-title animate__animated animate__flipInX">用 Distribution 建立 TLS 容器倉庫</h1><div class=post-meta><div class=post-meta-line><span class=post-author><a href=/ title=Author rel=author class=author><i class="fas fa-user-circle fa-fw" aria-hidden=true></i>Divazone King</a></span>&nbsp;<span class=post-category>收錄於 <a href=/categories/container/><i class="far fa-folder fa-fw" aria-hidden=true></i>container</a></span></div><div class=post-meta-line><i class="far fa-calendar-alt fa-fw" aria-hidden=true></i>&nbsp;<time datetime=2026-10-28>2026-10-28</time>&nbsp;<i class="fas fa-pencil-alt fa-fw" aria-hidden=true></i>&nbsp;約 1129 字&nbsp;
+<i class="far fa-clock fa-fw" aria-hidden=true></i>&nbsp;預計閱讀 3 分鐘&nbsp;</div></div><div class="details toc" id=toc-static data-kept><div class="details-summary toc-title"><span>目錄</span>
+<span><i class="details-icon fas fa-angle-right" aria-hidden=true></i></span></div><div class="details-content toc-content" id=toc-content-static><nav id=TableOfContents><ul><li><a href=#系統規格>系統規格</a></li><li><a href=#安裝過程>安裝過程</a><ul><li><a href=#準備-os>準備 OS</a></li><li><a href=#docker-distribution>Docker Distribution</a><ul><li><a href=#安裝-distribution>安裝 Distribution</a></li><li><a href=#設定-distribution>設定 Distribution</a></li></ul></li><li><a href=#自簽-openssl>自簽 OpenSSL</a></li><li><a href=#啟動-distribution>啟動 Distribution</a></li><li><a href=#啟用-firewall>啟用 Firewall</a></li><li><a href=#驗證-container-registry>驗證 Container Registry</a></li></ul></li><li><a href=#結語>結語</a></li><li><a href=#references>References</a></li></ul></nav></div></div><div class=content id=content><p>遇過非常多人使用 Distribution 和 RHEL 來建立人生第一個容器映像檔倉庫 (Container Registry) 時，都會遇到 SSL/TLS 相關的問題，大多都是用 <a href=https://distribution.github.io/distribution/about/insecure/ target=_blank rel="noopener noreffer"><code>insecure-registries</code></a> 來避掉，今天要來分享自簽憑證的作法</p><h2 id=系統規格>系統規格</h2><ul><li>Hostname: registry.lab.test</li><li>IP: 10.0.100.7/24</li><li>Necessary Software<ul><li><a href=https://github.com/distribution/distribution target=_blank rel="noopener noreffer">Distribution</a> 3.1.2，使用官方容器映像</li><li>RHEL 9 / 10</li><li>Podman、OpenSSL 3、Skopeo，使用對應 RHEL 套件庫提供的版本</li></ul></li></ul><h2 id=安裝過程>安裝過程</h2><h3 id=準備-os>準備 OS</h3><ul><li><code>Firewalld</code> 開啟、<code>SELinux</code> 保持 Enforcing</li><li>以 RHEL 9/10 為核心，已配置有效的 BaseOS、AppStream 套件庫</li><li>以下指令以 root 執行，使用 rootful Podman；RHEL 9/10 可使用相同指令，但套件版本與預設設定可能不同</li><li>伺服器與客戶端均需透過 DNS 或 <code>/etc/hosts</code> 將 <code>registry.lab.test</code> 解析到 <code>10.0.100.7</code></li></ul><h3 id=docker-distribution>Docker Distribution</h3><h4 id=安裝-distribution>安裝 Distribution</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>dnf install -y podman openssl firewalld ca-certificates
+</span></span><span class=line><span class=cl>install -d -m <span class=m>0750</span> /etc/distribution/certs /var/lib/registry
+</span></span><span class=line><span class=cl>podman pull docker.io/library/registry:3.1.2
+</span></span></code></pre></td></tr></table></div></div><p>RHEL 9/10 使用 Podman 執行官方映像，設定與憑證統一放在 <code>/etc/distribution</code>。</p><h4 id=設定-distribution>設定 Distribution</h4><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span><span class=lnt>11
+</span><span class=lnt>12
+</span><span class=lnt>13
+</span><span class=lnt>14
+</span><span class=lnt>15
+</span><span class=lnt>16
+</span><span class=lnt>17
+</span><span class=lnt>18
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>cat <span class=s>&lt;&lt; &#39;EOF&#39; &gt; /etc/distribution/config.yml
+</span></span></span><span class=line><span class=cl><span class=s>---
+</span></span></span><span class=line><span class=cl><span class=s>version: 0.1
+</span></span></span><span class=line><span class=cl><span class=s>log:
+</span></span></span><span class=line><span class=cl><span class=s>  fields:
+</span></span></span><span class=line><span class=cl><span class=s>    service: registry
+</span></span></span><span class=line><span class=cl><span class=s>storage:
+</span></span></span><span class=line><span class=cl><span class=s>    cache:
+</span></span></span><span class=line><span class=cl><span class=s>        blobdescriptor: inmemory
+</span></span></span><span class=line><span class=cl><span class=s>    filesystem:
+</span></span></span><span class=line><span class=cl><span class=s>        rootdirectory: /var/lib/registry
+</span></span></span><span class=line><span class=cl><span class=s>http:
+</span></span></span><span class=line><span class=cl><span class=s>    addr: 0.0.0.0:5000
+</span></span></span><span class=line><span class=cl><span class=s>    host: https://registry.lab.test:5000
+</span></span></span><span class=line><span class=cl><span class=s>    tls:
+</span></span></span><span class=line><span class=cl><span class=s>      certificate: /etc/distribution/certs/registry.crt
+</span></span></span><span class=line><span class=cl><span class=s>      key: /etc/distribution/certs/registry.key
+</span></span></span><span class=line><span class=cl><span class=s>EOF</span>
+</span></span></code></pre></td></tr></table></div></div><p>依據上述的設定檔，<code>/var/lib/registry</code> 是指定主要放置 Container Images 檔案的位置，後面會掛載主機的同一路徑；<code>:5000</code> 開的 Port 預設是 5000，但可以依據需求修改；<code>certificate</code>、<code>key</code> 則是放置 SSL/TLS 的憑證和金鑰，後面會講怎麼快速自簽；若想要瞭解更多的設定檔，可以參考 <a href=https://distribution.github.io/distribution/about/configuration/ target=_blank rel="noopener noreffer">Distribution - Configuring a registry</a></p><h3 id=自簽-openssl>自簽 OpenSSL</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl><span class=nb>umask</span> <span class=m>077</span>
+</span></span><span class=line><span class=cl>openssl req -x509 -noenc -sha256 -days <span class=m>365</span> -newkey rsa:2048 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -keyout /etc/distribution/certs/registry.key <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -out /etc/distribution/certs/registry.crt <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -subj <span class=s2>&#34;/CN=registry.lab.test&#34;</span> <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -addext <span class=s2>&#34;subjectAltName=DNS:registry.lab.test,IP:10.0.100.7&#34;</span>
+</span></span><span class=line><span class=cl>chmod <span class=m>0600</span> /etc/distribution/certs/registry.key
+</span></span></code></pre></td></tr></table></div></div><p>注意 <code>subjectAltName</code> 務必要填自己的 hostname；若要透過 IP 存取，也要填入對應的 IP。現代客戶端不能只靠 Common Name 驗證 hostname。RHEL 9/10 的 OpenSSL 3 可使用 <code>-noenc</code> 和 <code>-addext</code>，不需要互動式填寫憑證欄位。</p><p>在 RHEL 匯入自簽憑證：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>openssl x509 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -in /etc/distribution/certs/registry.crt <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -out /etc/pki/ca-trust/source/anchors/workstation.pem <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  -outform PEM
+</span></span><span class=line><span class=cl>update-ca-trust
+</span></span></code></pre></td></tr></table></div></div><p>建議把 <code>/etc/distribution/certs/registry.crt</code> 透過可信管道提供給其他機器，未來只要有需要用到該 Container Registry 的 RHEL 客戶端，都要執行上面的動作匯入憑證，並將 <code>-in</code> 改成該機器實際存放憑證的位置；不要提供 <code>.key</code> 私鑰檔案。</p><h3 id=啟動-distribution>啟動 Distribution</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt> 1
+</span><span class=lnt> 2
+</span><span class=lnt> 3
+</span><span class=lnt> 4
+</span><span class=lnt> 5
+</span><span class=lnt> 6
+</span><span class=lnt> 7
+</span><span class=lnt> 8
+</span><span class=lnt> 9
+</span><span class=lnt>10
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>podman run -d --name registry --restart<span class=o>=</span>always <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  --publish 10.0.100.7:5000:5000 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  --volume /etc/distribution:/etc/distribution:ro,Z <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  --volume /var/lib/registry:/var/lib/registry:Z <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  --env <span class=nv>OTEL_TRACES_EXPORTER</span><span class=o>=</span>none <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  docker.io/library/registry:3.1.2 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  serve /etc/distribution/config.yml
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>systemctl <span class=nb>enable</span> podman-restart.service
+</span></span><span class=line><span class=cl>podman logs registry
+</span></span></code></pre></td></tr></table></div></div><p><code>:Z</code> 會設定容器需要的 SELinux 標籤，<code>:ro</code> 將設定和憑證目錄設為唯讀。<code>podman-restart.service</code> 用來在主機開機後恢復這個 rootful 容器；修改設定或憑證後，執行 <code>podman restart registry</code>。</p><p>此範例只設定 TLS，不含登入驗證，僅供受控網路測試。</p><h3 id=啟用-firewall>啟用 Firewall</h3><p>先用 <code>firewall-cmd --get-active-zones</code> 確認網卡所屬區域；以下以 <code>public</code> 為例，請依環境調整：</p><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>systemctl <span class=nb>enable</span> --now firewalld
+</span></span><span class=line><span class=cl>firewall-cmd --get-active-zones
+</span></span><span class=line><span class=cl>firewall-cmd --zone<span class=o>=</span>public --add-port<span class=o>=</span>5000/tcp --permanent
+</span></span><span class=line><span class=cl>firewall-cmd --reload
+</span></span><span class=line><span class=cl>podman network reload registry
+</span></span><span class=line><span class=cl>firewall-cmd --zone<span class=o>=</span>public --list-all
+</span></span></code></pre></td></tr></table></div></div><h3 id=驗證-container-registry>驗證 Container Registry</h3><div class=highlight><div class=chroma><table class=lntable><tr><td class=lntd><pre tabindex=0 class=chroma><code><span class=lnt>1
+</span><span class=lnt>2
+</span><span class=lnt>3
+</span><span class=lnt>4
+</span><span class=lnt>5
+</span><span class=lnt>6
+</span><span class=lnt>7
+</span></code></pre></td><td class=lntd><pre tabindex=0 class=chroma><code class=language-bash data-lang=bash><span class=line><span class=cl>dnf install -y skopeo
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>skopeo copy --all <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  docker://docker.io/library/alpine:3.24.3 <span class=se>\
+</span></span></span><span class=line><span class=cl><span class=se></span>  docker://registry.lab.test:5000/library/alpine:3.24.3
+</span></span><span class=line><span class=cl>
+</span></span><span class=line><span class=cl>skopeo inspect docker://registry.lab.test:5000/library/alpine:3.24.3
+</span></span></code></pre></td></tr></table></div></div><p><code>--all</code> 會一併複製多平台映像；測試映像改用 Alpine，避免沿用已停止維護的 CentOS 7。</p><h2 id=結語>結語</h2><p>整個過程其實蠻簡單的，大概不用半小時就可以建立完，但他能提供的功能，就是非常基本中的基本 - <code>放映像檔</code>，若要尋求多功能的 Container Registry，可以考慮使用紅帽宣布 <a href=https://www.redhat.com/en/blog/red-hat-introduces-open-source-project-quay-container-registry target=_blank rel="noopener noreffer">Red Hat Introduces open source Project Quay container registry</a> 的 Project Quay，比較符合現實生活。</p><h2 id=references>References</h2><ul><li><a href=https://distribution.github.io/distribution/about/insecure/ target=_blank rel="noopener noreffer">Distribution - Test an insecure registry</a></li><li><a href=https://github.com/distribution/distribution target=_blank rel="noopener noreffer">GitHub - distribution/distribution</a></li><li><a href=https://distribution.github.io/distribution/about/configuration/ target=_blank rel="noopener noreffer">Distribution - Configuring a registry</a></li></ul></div><div class=post-footer id=post-footer><div class=post-info><div class=post-info-line><div class=post-info-mod><span>更新於 2026-10-29</span></div></div><div class=post-info-line><div class=post-info-md></div><div class=post-info-share><span><a href=javascript:void(0); title="分享到 Twitter" data-sharer=twitter data-url=https://blog.divazone.tw/2026/10/20261028-how-to-build-up-a-secure-container-registry-using-docker-distribution/ data-title="用 Distribution 建立 TLS 容器倉庫" data-hashtags="container,registry,smart start"><i class="fab fa-twitter fa-fw" aria-hidden=true></i></a><a href=javascript:void(0); title="分享到 Facebook" data-sharer=facebook data-url=https://blog.divazone.tw/2026/10/20261028-how-to-build-up-a-secure-container-registry-using-docker-distribution/ data-hashtag=container><i class="fab fa-facebook-square fa-fw" aria-hidden=true></i></a></span></div></div></div><div class=post-info-more><section class=post-tags><i class="fas fa-tags fa-fw" aria-hidden=true></i>&nbsp;<a href=/tags/container/>container</a>,&nbsp;<a href=/tags/registry/>registry</a>,&nbsp;<a href=/tags/smart-start/>smart start</a></section><section><span><a href=javascript:void(0); onclick=window.history.back()>返回</a></span>&nbsp;|&nbsp;<span><a href=/>主頁</a></span></section></div><div class=post-nav><a href=/2026/10/20261027-self-defined-qcow2.md/ class=prev rel=prev title="自定義 QCOW2 映像檔"><i class="fas fa-angle-left fa-fw" aria-hidden=true></i>自定義 QCOW2 映像檔</a>
+<a href=/2026/10/20261029-skopeo/ class=next rel=next title="Skopeo: 管理 Container 映像檔及倉庫的方式">Skopeo: 管理 Container 映像檔及倉庫的方式<i class="fas fa-angle-right fa-fw" aria-hidden=true></i></a></div></div><div id=comments><div id=disqus_thread class=comment></div><noscript>Please enable JavaScript to view the comments powered by <a href=https://disqus.com/?ref_noscript>Disqus</a>.</noscript></div></article></div></main><footer class=footer><div class=footer-container><div class=footer-line>由 <a href=https://gohugo.io/ target=_blank rel="noopener noreffer" title="Hugo 0.123.3">Hugo</a> 強力驅動 | 主題 - <a href=https://github.com/dillonzq/LoveIt target=_blank rel="noopener noreffer" title="LoveIt 0.2.11"><i class="far fa-kiss-wink-heart fa-fw" aria-hidden=true></i> LoveIt</a></div><div class=footer-line itemscope itemtype=http://schema.org/CreativeWork><i class="far fa-copyright fa-fw" aria-hidden=true></i><span itemprop=copyrightYear>2022 - 2026</span><span class=author itemprop=copyrightHolder>&nbsp;<a href=/ target=_blank>Divazone King</a></span>&nbsp;|&nbsp;<span class=license>All Rights Reserved</span></div></div></footer></div><div id=fixed-buttons><a href=# id=back-to-top class=fixed-button title=回到頂部><i class="fas fa-arrow-up fa-fw" aria-hidden=true></i>
+</a><a href=# id=view-comments class=fixed-button title=查看評論><i class="fas fa-comment fa-fw" aria-hidden=true></i></a></div><script type=text/javascript src=https://divazone-tw.disqus.com/embed.js defer></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/autocomplete.js@0.38.1/dist/autocomplete.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/algoliasearch@4.13.1/dist/algoliasearch-lite.umd.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/lazysizes@5.3.2/lazysizes.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/clipboard@2.0.11/dist/clipboard.min.js></script><script type=text/javascript src=https://cdn.jsdelivr.net/npm/sharer.js@0.5.1/sharer.min.js></script><script type=text/javascript>window.config={code:{copyTitle:"複製到剪貼板",maxShownLines:50},comment:{},search:{algoliaAppID:"BR8J22JKVH",algoliaIndex:"blog.divazone",algoliaSearchKey:"4d018756130ab82ac57f3cd9c585ea19",highlightTag:"em",maxResultLength:10,noResultsFound:"沒有找到結果",snippetLength:30,type:"algolia"}}</script><script type=text/javascript src=/js/theme.min.d7121d72cd85153ec9d35a888cee3eb28c2700ca763f649a538f6c772d750021.js integrity="sha256-1xIdcs2FFT7J01qIjO4+sownAMp2P2SaU49sdy11ACE="></script><script type=text/javascript>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag("js",new Date),gtag("config","G-4BPYV5FEFR",{anonymize_ip:!0})</script><script type=text/javascript src="https://www.googletagmanager.com/gtag/js?id=G-4BPYV5FEFR" async></script></body></html>
